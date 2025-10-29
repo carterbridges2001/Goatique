@@ -242,20 +242,34 @@
                 }
             }
             
+            // Function to format image URL
+            function getImageUrl(imagePath) {
+                if (!imagePath) return 'https://via.placeholder.com/400x300?text=No+Image';
+                if (imagePath.startsWith('http')) return imagePath;
+                if (imagePath.startsWith('gs://')) {
+                    const pathParts = imagePath.split('/');
+                    const bucket = pathParts[2];
+                    const encodedPath = pathParts.slice(3).map(encodeURIComponent).join('/');
+                    return `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${encodedPath}?alt=media`;
+                }
+                return imagePath;
+            }
+            
             // Function to create a goat card
             function createGoatCard(goat) {
                 const imageUrl = goat.images && goat.images.length > 0 
-                    ? goat.images[0] 
+                    ? getImageUrl(goat.images[0])
                     : 'https://via.placeholder.com/400x300?text=No+Image';
                 
                 const price = goat.price ? `$${parseFloat(goat.price).toLocaleString()}` : 'Price on Request';
                 const location = goat.location || 'Location not specified';
                 const breed = goat.breed ? goat.breed.charAt(0).toUpperCase() + goat.breed.slice(1) : 'Breed not specified';
+                const listingId = goat.id || ''; // Ensure we have a valid ID or empty string
                 
                 return `
                     <div class="goat-card">
                         <div class="goat-image" style="background-image: url('${imageUrl}')" 
-                             onclick="window.location.href='listing-details.html?id=${goat.id}'">
+                             onclick="window.location.href='listing-details.html?id=${listingId}'">
                             ${goat.isSponsored ? '<span class="sponsored-badge">Featured</span>' : ''}
                         </div>
                         <div class="goat-info">
@@ -263,7 +277,7 @@
                             <p class="price">${price}</p>
                             <p class="breed">${breed}</p>
                             <p class="location"><i class="fas fa-map-marker-alt"></i> ${location}</p>
-                            <a href="listing-details.html?id=${goat.id}" class="btn btn-primary">View Details</a>
+                            <a href="listing-details.html?id=${listingId}" class="btn btn-primary">View Details</a>
                         </div>
                     </div>`;
             }
