@@ -73,34 +73,6 @@
         
         .view-all {
             color: #4f46e5;
-            font-weight: 500;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: color 0.2s;
-        }
-        
-        .view-all:hover {
-            color: #4338ca;
-        }
-        
-        .view-all i {
-            font-size: 0.8em;
-            transition: transform 0.2s;
-        }
-        
-        .view-all:hover i {
-            transform: translateX(4px);
-        }
-        
-        .loading-spinner {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 2rem;
-            color: #6b7280;
-            font-size: 1.1rem;
-        }
         
         .loading-spinner i {
             margin-right: 0.5rem;
@@ -242,20 +214,50 @@
                 }
             }
             
+            // Function to get a properly formatted image URL
+            function getImageUrl(imagePath) {
+                // If it's already a full URL, return it
+                if (imagePath.startsWith('http')) {
+                    return imagePath;
+                }
+                
+                // If it's a Firebase Storage reference, format it
+                if (imagePath.startsWith('gs://')) {
+                    const pathParts = imagePath.split('/');
+                    const bucket = pathParts[2];
+                    const encodedPath = pathParts.slice(3).map(encodeURIComponent).join('/');
+                    return `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${encodedPath}?alt=media`;
+                }
+                
+                // Default placeholder if no image
+                return 'https://via.placeholder.com/400x300?text=Loading+Image';
+            }
+            
+            // Function to handle image errors
+            function handleImageError(img) {
+                img.onerror = null; // Prevent infinite loop
+                img.src = 'https://via.placeholder.com/400x300?text=Image+Not+Available';
+                img.style.objectFit = 'cover';
+            }
+            
             // Function to create a goat card
             function createGoatCard(goat) {
-                const imageUrl = goat.images && goat.images.length > 0 
-                    ? goat.images[0] 
-                    : 'https://via.placeholder.com/400x300?text=No+Image';
-                
+                const hasImages = goat.images && goat.images.length > 0;
+                const mainImage = hasImages ? getImageUrl(goat.images[0]) : 'https://via.placeholder.com/400x300?text=No+Image';
                 const price = goat.price ? `$${parseFloat(goat.price).toLocaleString()}` : 'Price on Request';
                 const location = goat.location || 'Location not specified';
                 const breed = goat.breed ? goat.breed.charAt(0).toUpperCase() + goat.breed.slice(1) : 'Breed not specified';
                 
                 return `
                     <div class="goat-card">
-                        <div class="goat-image" style="background-image: url('${imageUrl}')" 
-                             onclick="window.location.href='listing-details.html?id=${goat.id}'">
+                        <div class="goat-image-container" onclick="window.location.href='listing-details.html?id=${goat.id}'">
+                            <img 
+                                src="${mainImage}" 
+                                alt="${goat.title || 'Goat for Sale'}" 
+                                class="goat-image"
+                                onerror="this.onerror=null; this.src='https://via.placeholder.com/400x300?text=Image+Not+Available'; this.style.objectFit='cover';"
+                                loading="lazy"
+                            >
                             ${goat.isSponsored ? '<span class="sponsored-badge">Featured</span>' : ''}
                         </div>
                         <div class="goat-info">
