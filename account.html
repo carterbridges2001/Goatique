@@ -176,6 +176,49 @@
             </div>
         </div>
     </nav>
+    
+    <!-- Firebase SDKs (if not already loaded) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    
+    <script>
+        // Initialize Firebase (already initialized in other scripts)
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        // Check auth state on page load
+        auth.onAuthStateChanged((user) => {
+            const userProfile = document.getElementById('userProfile');
+            const loginBtn = document.getElementById('loginBtn');
+            const userGreeting = document.getElementById('userGreeting');
+            
+            if (user) {
+                // User is signed in
+                document.body.classList.add('logged-in');
+                if (userProfile) userProfile.style.display = 'block';
+                if (loginBtn) loginBtn.style.display = 'none';
+                if (userGreeting) {
+                    userGreeting.textContent = user.displayName || user.email.split('@')[0];
+                }
+            } else {
+                // User is signed out
+                document.body.classList.remove('logged-in');
+                if (userProfile) userProfile.style.display = 'none';
+                if (loginBtn) loginBtn.style.display = 'inline-block';
+            }
+        });
+        
+        // Handle logout
+        document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            auth.signOut().then(() => {
+                window.location.href = 'index.html';
+            }).catch((error) => {
+                console.error('Logout error:', error);
+            });
+        });
+    </script>
 
     <!-- Account Content -->
     <div class="container account-container">
