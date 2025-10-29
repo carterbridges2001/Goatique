@@ -1,3 +1,24 @@
+// Function to update UI based on authentication state
+function updateUI(user) {
+    const userProfile = document.getElementById('userProfile');
+    const userGreeting = document.getElementById('userGreeting');
+    const loginBtn = document.getElementById('loginBtn');
+    
+    if (user) {
+        // User is signed in
+        document.body.classList.add('logged-in');
+        if (userProfile) userProfile.style.display = 'block';
+        if (userGreeting) userGreeting.textContent = user.displayName || user.email.split('@')[0];
+        if (loginBtn) loginBtn.style.display = 'none';
+    } else {
+        // User is signed out
+        document.body.classList.remove('logged-in');
+        if (userProfile) userProfile.style.display = 'none';
+        if (loginBtn) loginBtn.style.display = 'inline-block';
+    }
+}
+
+// Check authentication state on page load
 document.addEventListener('DOMContentLoaded', function() {
     // Check if we're on the login page
     const loginForm = document.getElementById('loginForm');
@@ -54,7 +75,8 @@ async function handleLogin(e) {
         // Sign in with email and password
         const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
         
-        // Redirect to the page they were on or home
+        // Update UI and redirect to the page they were on or home
+        updateUI(userCredential.user);
         const urlParams = new URLSearchParams(window.location.search);
         const redirectUrl = urlParams.get('redirect') || 'index.html';
         window.location.href = redirectUrl;
@@ -96,7 +118,8 @@ async function handleRegister(e) {
             email: user.email,
             displayName: fullName,
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            role: 'buyer' // Default role
+            role: 'buyer', // Default role
+            lastLogin: firebase.firestore.FieldValue.serverTimestamp()
         });
         
         // Send email verification
@@ -195,15 +218,20 @@ async function signInWithFacebook() {
 }
 
 // Handle user logout
-async function handleLogout() {
-    try {
-        await firebase.auth().signOut();
+function handleLogout() {
+    firebase.auth().signOut().then(() => {
+        // Update UI and redirect to home page after logout
+        updateUI(null);
         window.location.href = 'index.html';
-    } catch (error) {
+    }).catch((error) => {
         console.error('Logout error:', error);
-        showError('Failed to log out. Please try again.');
-    }
+    });
 }
+
+// Listen for authentication state changes
+firebase.auth().onAuthStateChanged((user) => {
+    updateUI(user);
+});
 
 // Helper function to show error messages
 function showError(message) {
