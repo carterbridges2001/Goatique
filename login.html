@@ -72,11 +72,43 @@
         </div>
     </section>
 
-    <!-- Firebase and other scripts -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-    <script src="firebase-config.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+    
+    <!-- Firebase Configuration -->
+    <script>
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyC7draXchRUCkK1Hut1eD-Km1_Y4f_AtCU",
+        authDomain: "goatique-536bd.firebaseapp.com",
+        projectId: "goatique-536bd",
+        storageBucket: "goatique-536bd.firebasestorage.app",
+        messagingSenderId: "63709506575",
+        appId: "1:63709506575:web:864e9369dcf7021859077a",
+        measurementId: "G-63D52N4Z66"
+      };
+
+      // Initialize Firebase
+      const app = firebase.initializeApp(firebaseConfig);
+      
+      // Initialize services
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+      const storage = firebase.storage();
+      
+      // Make them globally available
+      window.auth = auth;
+      window.db = db;
+      window.storage = storage;
+      
+      // Test connection
+      console.log('Firebase initialized successfully!');
+    </script>
+    
+    <!-- Auth Script -->
     <script src="auth.js"></script>
 </body>
 </html>
