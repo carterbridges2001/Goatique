@@ -255,15 +255,56 @@
 
         <div class="account-sections">
             <div class="account-sidebar">
-                <ul class="account-nav">
-                    <li><a href="#" class="active"><i class="fas fa-user"></i> Profile Overview</a></li>
-                    <li><a href="#"><i class="fas fa-shopping-bag"></i> My Purchases <span class="badge">3</span></a></li>
-                    <li><a href="#"><i class="fas fa-tag"></i> My Listings <span class="badge">5</span></a></li>
-                    <li><a href="#"><i class="fas fa-heart"></i> Saved Items <span class="badge">12</span></a></li>
-                    <li><a href="#"><i class="fas fa-credit-card"></i> Payment Methods</a></li>
-                    <li><a href="#"><i class="fas fa-cog"></i> Account Settings</a></li>
-                    <li><a href="#"><i class="fas fa-bell"></i> Notifications <span class="badge badge-primary">2</span></a></li>
-                    <li><a href="#"><i class="fas fa-question-circle"></i> Help & Support</a></li>
+                <ul class="account-nav nav flex-column">
+                    <li class="nav-item">
+                        <a href="#overview" class="nav-link active" data-bs-toggle="tab" data-bs-target="#overview">
+                            <i class="fas fa-user me-2"></i> Profile Overview
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#purchases" class="nav-link" data-bs-toggle="tab" data-bs-target="#purchases">
+                            <i class="fas fa-shopping-bag me-2"></i> My Purchases 
+                            <span id="purchasesCount" class="badge bg-secondary ms-auto">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#listings" class="nav-link" data-bs-toggle="tab" data-bs-target="#listings">
+                            <i class="fas fa-tag me-2"></i> My Listings 
+                            <span id="listingsCount" class="badge bg-secondary ms-auto">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#saved" class="nav-link" data-bs-toggle="tab" data-bs-target="#saved">
+                            <i class="fas fa-heart me-2"></i> Saved Items 
+                            <span id="savedCount" class="badge bg-secondary ms-auto">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#payments" class="nav-link" data-bs-toggle="tab" data-bs-target="#payments">
+                            <i class="fas fa-credit-card me-2"></i> Payment Methods
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#settings" class="nav-link" data-bs-toggle="tab" data-bs-target="#settings">
+                            <i class="fas fa-cog me-2"></i> Account Settings
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#notifications" class="nav-link" data-bs-toggle="tab" data-bs-target="#notifications">
+                            <i class="fas fa-bell me-2"></i> Notifications 
+                            <span id="notificationsCount" class="badge bg-primary ms-auto">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="help.html" class="nav-link">
+                            <i class="fas fa-question-circle me-2"></i> Help & Support
+                        </a>
+                    </li>
+                    <li class="nav-item mt-3">
+                        <button id="logoutBtn" class="btn btn-outline-danger w-100">
+                            <i class="fas fa-sign-out-alt me-2"></i> Logout
+                        </button>
+                    </li>
                 </ul>
                 
                 <div class="account-upgrade">
@@ -290,81 +331,47 @@
                 <!-- Quick Stats -->
                 <div class="quick-stats">
                     <div class="stat-card stat-primary">
-                        <i class="fas fa-shopping-cart"></i>
+                        <i class="fas fa-tag"></i>
                         <div class="stat-details">
-                            <span class="stat-value">12</span>
-                            <span class="stat-label">Total Orders</span>
+                            <span class="stat-value" id="totalListingsCount">0</span>
+                            <span class="stat-label">Total Listings</span>
                         </div>
                     </div>
                     <div class="stat-card stat-success">
-                        <i class="fas fa-dollar-sign"></i>
+                        <i class="fas fa-eye"></i>
                         <div class="stat-details">
-                            <span class="stat-value">$1,245</span>
-                            <span class="stat-label">Total Spent</span>
+                            <span class="stat-value" id="totalViewsCount">0</span>
+                            <span class="stat-label">Total Views</span>
                         </div>
                     </div>
                     <div class="stat-card stat-warning">
                         <i class="fas fa-star"></i>
                         <div class="stat-details">
-                            <span class="stat-value">4.8</span>
+                            <span class="stat-value" id="sellerRating">0.0</span>
                             <span class="stat-label">Seller Rating</span>
                         </div>
                     </div>
                     <div class="stat-card stat-info">
                         <i class="fas fa-gift"></i>
                         <div class="stat-details">
-                            <span class="stat-value">3</span>
+                            <span class="stat-value" id="activeListingsCount">0</span>
                             <span class="stat-label">Active Listings</span>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Recent Activity -->
-                <div class="recent-activity">
-                    <div class="section-header">
-                        <h3 class="section-title">Recent Activity</h3>
-                        <a href="#" class="view-all">View All</a>
-                    </div>
-                    <div class="activity-list">
-                        <div class="activity-item">
-                            <div class="activity-icon">
-                                <i class="fas fa-shopping-cart"></i>
-                            </div>
-                            <div class="activity-details">
-                                <h4>New Order #GOAT-2023-001</h4>
-                                <p>Your order has been confirmed and is being processed.</p>
-                                <span class="activity-time">2 hours ago</span>
-                            </div>
-                            <div class="activity-actions">
-                                <button class="btn-icon"><i class="fas fa-eye"></i></button>
-                            </div>
-                        </div>
-                        <div class="activity-item">
-                            <div class="activity-icon">
-                                <i class="fas fa-comment-dots"></i>
-                            </div>
-                            <div class="activity-details">
-                                <h4>New Message from Buyer</h4>
-                                <p>You have a new message about your listing "Premium Nubian Goat".</p>
-                                <span class="activity-time">1 day ago</span>
-                            </div>
-                            <div class="activity-actions">
-                                <button class="btn-icon"><i class="fas fa-reply"></i></button>
-                            </div>
-                        </div>
-                        <div class="activity-item">
-                            <div class="activity-icon">
-                                <i class="fas fa-check-circle"></i>
-                            </div>
-                            <div class="activity-details">
-                                <h4>Listing Approved</h4>
-                                <p>Your listing "Healthy Alpine Goat Kids" has been approved and is now live.</p>
-                                <span class="activity-time">3 days ago</span>
-                            </div>
-                            <div class="activity-actions">
-                                <button class="btn-icon"><i class="fas fa-eye"></i></button>
-                            </div>
-                        </div>
+
+                <div class="account-sections">
+                    <div class="account-sidebar">
+                        <ul class="account-nav">
+                            <li><a href="#overview" class="nav-link active" data-bs-toggle="tab" data-bs-target="#overview"><i class="fas fa-user"></i> Profile Overview</a></li>
+                            <li><a href="#purchases" class="nav-link" data-bs-toggle="tab" data-bs-target="#purchases"><i class="fas fa-shopping-bag"></i> My Purchases <span id="purchasesCount" class="badge">0</span></a></li>
+                            <li><a href="#listings" class="nav-link" data-bs-toggle="tab" data-bs-target="#listings"><i class="fas fa-tag"></i> My Listings <span id="listingsCount" class="badge">0</span></a></li>
+                            <li><a href="#saved" class="nav-link" data-bs-toggle="tab" data-bs-target="#saved"><i class="fas fa-heart"></i> Saved Items <span id="savedCount" class="badge">0</span></a></li>
+                            <li><a href="#payments" class="nav-link" data-bs-toggle="tab" data-bs-target="#payments"><i class="fas fa-credit-card"></i> Payment Methods</a></li>
+                            <li><a href="#settings" class="nav-link" data-bs-toggle="tab" data-bs-target="#settings"><i class="fas fa-cog"></i> Account Settings</a></li>
+                            <li><a href="#notifications" class="nav-link" data-bs-toggle="tab" data-bs-target="#notifications"><i class="fas fa-bell"></i> Notifications <span id="notificationsCount" class="badge bg-primary">0</span></a></li>
+                            <li><a href="help.html"><i class="fas fa-question-circle"></i> Help & Support</a></li>
+                        </ul>
                     </div>
                 </div>
                 
@@ -635,218 +642,799 @@
     </div>
 
     <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
     
+    <!-- Your Firebase configuration -->
     <script>
-        // Check if Firebase is already initialized
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC7draXchRUCkK1Hut1eD-Km1_Y4f_AtCU",
+            authDomain: "goatique-536bd.firebaseapp.com",
+            projectId: "goatique-536bd",
+            storageBucket: "goatique-536bd.appspot.com",
+            messagingSenderId: "63709506575",
+            appId: "1:63709506575:web:864e9369dcf7021859077a"
+        };
+
+        // Initialize Firebase
         if (!firebase.apps.length) {
-            // Initialize Firebase
-            const firebaseConfig = {
-                apiKey: "AIzaSyC7draXchRUCkK1Hut1eD-Km1_Y4f_AtCU",
-                authDomain: "goatique-536bd.firebaseapp.com",
-                projectId: "goatique-536bd",
-                storageBucket: "goatique-536bd.appspot.com",
-                messagingSenderId: "63709506575",
-                appId: "1:63709506575:web:864e9369dcf7021859077a",
-                measurementId: "G-63D52N4Z66"
-            };
-            
             firebase.initializeApp(firebaseConfig);
         }
         
-        // Initialize services
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        
-        // Initialize Firestore settings
-        db.settings({ timestampsInSnapshots: true });
-        
-        // Update UI based on auth state
-        auth.onAuthStateChanged((user) => {
-            if (!user) {
-                // If user is not logged in, redirect to login page
-                window.location.href = 'login.html';
-            } else {
-                // User is signed in, update the UI
-                updateUI(user);
-                loadUserData(user.uid);
+        // Make auth and firestore references global
+        window.auth = firebase.auth();
+        window.db = firebase.firestore();
+        window.storage = firebase.storage();
+    </script>
+    
+    <!-- Auth Utils -->
+    <script>
+        // Simple auth utilities
+        const authUtils = {
+            getCurrentUser: () => auth.currentUser,
+            isAuthenticated: () => !!auth.currentUser,
+            requireAuth: () => {
+                if (!auth.currentUser) {
+                    window.location.href = 'login.html';
+                    return false;
+                }
+                return true;
+            }
+        };
+        window.authUtils = authUtils;
+    </script>
+    
+    <!-- Application JavaScript -->
+    <script src="js/auth.js"></script>
+    <script src="js/listings.js"></script>
+    <script>
+        // Global variables
+        let currentUser = null;
+        let userData = null;
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Firebase Auth state observer
+            auth.onAuthStateChanged(handleAuthStateChanged);
+            
+            // Initialize tab functionality
+            const tabEls = document.querySelectorAll('button[data-bs-toggle="tab"]');
+            tabEls.forEach(tabEl => {
+                tabEl.addEventListener('shown.bs.tab', function (event) {
+                    const target = event.target.getAttribute('data-bs-target');
+                    if (target === '#notifications') {
+                        loadUserNotifications(currentUser.uid);
+                    } else if (target === '#listings') {
+                        loadUserListings(currentUser.uid);
+                    }
+                });
+            });
+
+            // Handle profile update form
+            const profileForm = document.getElementById('profileForm');
+            if (profileForm) {
+                profileForm.addEventListener('submit', updateProfile);
+            }
+
+            // Handle password change form
+            const passwordForm = document.getElementById('passwordForm');
+            if (passwordForm) {
+                passwordForm.addEventListener('submit', changePassword);
+            }
+
+            // Handle account deletion
+            const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+            if (deleteAccountBtn) {
+                deleteAccountBtn.addEventListener('click', confirmDeleteAccount);
             }
         });
-        
-        // Handle logout
-        // Load user data from Firestore
-        async function loadUserData(userId) {
+
+        // Handle authentication state changes
+        async function handleAuthStateChanged(user) {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
             try {
-                const userDoc = await db.collection('users').doc(userId).get();
-                if (userDoc.exists) {
-                    const userData = userDoc.data();
-                    // Update stats
-                    const goatsListed = userData.goatsListed || 0;
-                    const goatsSold = userData.goatsSold || 0;
-                    
-                    document.getElementById('goatsListed').textContent = goatsListed;
-                    document.getElementById('goatsSold').textContent = goatsSold;
-                    document.getElementById('totalEarnings').textContent = 
-                        (userData.totalEarnings ? '$' + userData.totalEarnings.toLocaleString() : '$0');
-                    document.getElementById('rating').textContent = userData.rating ? userData.rating.toFixed(1) : '5.0';
-                    
-                    // Load user's listings
-                    if (goatsListed > 0) {
-                        loadUserListings(userId);
-                    } else {
-                        document.getElementById('listingsGrid').innerHTML = '';
-                        document.getElementById('noListings').style.display = 'block';
-                    }
-                }
+                currentUser = user;
+                await loadUserData(user);
+                await loadUserListings(user.uid);
+                updateUIForAuth(user);
+                updateStats();
+                
+                // Load notifications after a short delay to ensure UI is ready
+                setTimeout(() => loadUserNotifications(user.uid), 500);
+                
+                // Load additional user data for stats
+                await loadUserStats(user.uid);
             } catch (error) {
-                console.error('Error loading user data:', error);
+                console.error('Error in auth state change:', error);
+                showError('Error loading account data. Please refresh the page.');
             }
         }
         
-        // Load and display user's listings
-        async function loadUserListings(userId) {
+        // Load user stats from Firestore
+        async function loadUserStats(userId) {
             try {
-                const listingsGrid = document.getElementById('listingsGrid');
-                const listingsQuery = await db.collection('listings')
+                // Get user's listings for stats
+                const listingsSnapshot = await db.collection('listings')
                     .where('userId', '==', userId)
-                    .orderBy('createdAt', 'desc')
                     .get();
                 
-                if (listingsQuery.empty) {
-                    listingsGrid.innerHTML = '';
-                    document.getElementById('noListings').style.display = 'block';
+                // Calculate total views and earnings
+                let totalViews = 0;
+                let totalEarnings = 0;
+                let activeListings = 0;
+                let soldListings = 0;
+                
+                listingsSnapshot.forEach(doc => {
+                    const listing = doc.data();
+                    totalViews += (listing.views || 0);
+                    
+                    if (listing.status === 'sold' && listing.price) {
+                        totalEarnings += parseFloat(listing.price);
+                        soldListings++;
+                    } else if (listing.status === 'active') {
+                        activeListings++;
+                    }
+                });
+                
+                // Update stats in UI
+                document.getElementById('totalViews').textContent = totalViews.toLocaleString();
+                document.getElementById('activeListings').textContent = activeListings;
+                document.getElementById('soldListings').textContent = soldListings;
+                document.getElementById('totalEarnings').textContent = `$${totalEarnings.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                
+                // Update profile completion
+                updateProfileCompletion();
+                
+            } catch (error) {
+                console.error('Error loading user stats:', error);
+            }
+        }
+        
+        // Update profile completion percentage and progress bar
+        function updateProfileCompletion() {
+            if (!userData) return;
+            
+            let completion = 0;
+            const fields = [
+                userData.displayName,
+                userData.phone,
+                userData.location,
+                userData.photoURL,
+                userData.bio
+            ];
+            
+            // Count completed fields
+            const completedFields = fields.filter(field => field && field.trim() !== '').length;
+            completion = Math.round((completedFields / fields.length) * 100);
+            
+            // Update UI
+            const progressBar = document.querySelector('.progress-bar');
+            const progressText = document.querySelector('.progress-text');
+            
+            if (progressBar && progressText) {
+                progressBar.style.width = `${completion}%`;
+                progressText.textContent = `${completion}% Complete`;
+            }
+        }
+
+        // Load user data from Firestore
+        async function loadUserData(user) {
+            try {
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                if (userDoc.exists) {
+                    userData = { id: userDoc.id, ...userDoc.data() };
+                    
+                    // Update profile section
+                    const displayName = user.displayName || user.email.split('@')[0];
+                    document.getElementById('profileName').textContent = displayName;
+                    document.getElementById('displayName').value = displayName;
+                    document.getElementById('profileEmail').textContent = user.email;
+                    
+                    // Set profile image or default
+                    const profileAvatar = document.getElementById('profileAvatar');
+                    if (user.photoURL) {
+                        profileAvatar.src = user.photoURL;
+                    } else {
+                        profileAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=4f46e5&color=fff`;
+                    }
+                    
+                    // Update account info
+                    if (userData.phone) {
+                        document.getElementById('phone').value = userData.phone;
+                        document.getElementById('accountPhone').textContent = userData.phone;
+                    }
+                    
+                    if (userData.location) {
+                        document.getElementById('location').value = userData.location;
+                        document.getElementById('accountLocation').textContent = userData.location;
+                    }
+                    
+                    if (userData.bio) {
+                        document.getElementById('bio').value = userData.bio;
+                    }
+                    
+                    // Update member since date
+                    const memberSince = userData.createdAt?.toDate() || new Date(user.metadata.creationTime);
+                    document.getElementById('memberSince').textContent = memberSince.toLocaleDateString();
+                    
+                    // Update stats
+                    updateStats();
+                    
+                } else {
+                    // Create user document if it doesn't exist
+                    await db.collection('users').doc(user.uid).set({
+                        email: user.email,
+                        displayName: user.displayName || user.email.split('@')[0],
+                        photoURL: user.photoURL || '',
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        stats: {
+                            listingsCount: 0,
+                            totalViews: 0,
+                            memberSince: firebase.firestore.FieldValue.serverTimestamp()
+                        }
+                    });
+                    
+                    // Reload user data
+                    await loadUserData(user);
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                showError('Failed to load user data. Please try again.');
+            }
+        }
+        
+        // Update stats in the UI
+        function updateStats() {
+            if (!userData) return;
+            
+            // Update stats cards
+            const stats = userData.stats || {};
+            document.getElementById('goatsListed').textContent = stats.listingsCount || 0;
+            document.getElementById('totalViews').textContent = stats.totalViews || 0;
+            
+            // Calculate account age
+            if (stats.memberSince) {
+                const joinDate = stats.memberSince.toDate ? stats.memberSince.toDate() : new Date(stats.memberSince);
+                const months = (new Date().getFullYear() - joinDate.getFullYear()) * 12 + 
+                              (new Date().getMonth() - joinDate.getMonth());
+                document.getElementById('accountAge').textContent = `${months} ${months === 1 ? 'month' : 'months'}`;
+            }
+        }
+
+        // Load and display user's listings
+        async function loadUserListings(userId) {
+            const listingsGrid = document.getElementById('listingsGrid');
+            if (!listingsGrid) return;
+            
+            try {
+                const { listings } = await listingService.getUserListings(userId, { limit: 10 });
+                
+                if (listings.length === 0) {
+                    listingsGrid.innerHTML = `
+                        <div class="no-listings" style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
+                            <i class="fas fa-kiwi-bird" style="font-size: 2.5rem; color: #e5e7eb; margin-bottom: 1rem;"></i>
+                            <h3>No Listings Yet</h3>
+                            <p>You haven't listed any goats for sale yet.</p>
+                            <a href="create-listing.html" class="btn btn-primary" style="margin-top: 1rem;">
+                                <i class="fas fa-plus"></i> Create Your First Listing
+                            </a>
+                        </div>`;
                     return;
                 }
                 
-                let listingsHTML = '';
-                listingsQuery.forEach(doc => {
-                    const listing = { id: doc.id, ...doc.data() };
-                    listingsHTML += createListingCard(listing);
-                });
+                listingsGrid.innerHTML = listings.map(listing => createListingCard(listing)).join('');
                 
-                listingsGrid.innerHTML = listingsHTML;
-                
-                // Add event listeners to listing actions
-                document.querySelectorAll('.view-listing').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        const listingId = e.target.closest('button').dataset.id;
-                        window.location.href = `listing-details.html?id=${listingId}`;
+                // Add event listeners to action buttons
+                document.querySelectorAll('.edit-listing').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const listingId = e.currentTarget.dataset.id;
+                        window.location.href = `edit-listing.html?id=${listingId}`;
                     });
                 });
                 
-                document.querySelectorAll('.edit-listing').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        const listingId = e.target.closest('button').dataset.id;
-                        window.location.href = `edit-listing.html?id=${listingId}`;
+                document.querySelectorAll('.delete-listing').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        e.stopPropagation();
+                        const listingId = e.currentTarget.dataset.id;
+                        if (confirm('Are you sure you want to delete this listing? This action cannot be undone.')) {
+                            try {
+                                await listingService.deleteListing(listingId);
+                                e.currentTarget.closest('.listing-card').remove();
+                                // Update stats
+                                const goatsListed = document.getElementById('goatsListed');
+                                goatsListed.textContent = parseInt(goatsListed.textContent) - 1;
+                            } catch (error) {
+                                console.error('Error deleting listing:', error);
+                                showError('Failed to delete listing. Please try again.');
+                            }
+                        }
                     });
                 });
                 
             } catch (error) {
                 console.error('Error loading listings:', error);
-                listingsGrid.innerHTML = `
-                    <div class="error-message" style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #ef4444;">
-                        <i class="fas fa-exclamation-circle"></i>
-                        <p>Error loading listings. Please try again later.</p>
-                    </div>`;
+                showError('Failed to load your listings. Please try again.');
             }
         }
-        
+
         // Create HTML for a listing card
         function createListingCard(listing) {
-            const statusClass = `status-${listing.status || 'active'}`;
-            const statusText = (listing.status || 'active').charAt(0).toUpperCase() + (listing.status || 'active').slice(1);
-            const price = listing.price ? `$${parseFloat(listing.price).toLocaleString()}` : 'Price on Request';
             const imageUrl = listing.images && listing.images.length > 0 
-                ? listing.images[0] 
-                : 'https://via.placeholder.com/300x200?text=No+Image';
-            
-            const formattedDate = listing.createdAt ? new Date(listing.createdAt.seconds * 1000).toLocaleDateString() : 'N/A';
+                ? listing.images[0].startsWith('gs://') 
+                    ? `https://firebasestorage.googleapis.com/v0/b/${listing.images[0].split('/')[2]}/o/${encodeURIComponent(listing.images[0].split('/').slice(3).join('/'))}?alt=media`
+                    : listing.images[0]
+                : 'https://via.placeholder.com/400x300?text=No+Image';
+                
+            const price = listing.price ? `$${parseFloat(listing.price).toLocaleString()}` : 'Price on Request';
+            const status = listing.status || 'active';
+            const statusClass = status === 'sold' ? 'status-sold' : 'status-active';
             
             return `
-                <div class="listing-card">
+                <div class="listing-card" onclick="window.location.href='listing-details.html?id=${listing.id}'">
                     <div class="listing-image" style="background-image: url('${imageUrl}')">
-                        <span class="listing-status ${statusClass}">${statusText}</span>
+                        <span class="status-badge ${statusClass}">${status}</span>
                     </div>
                     <div class="listing-details">
-                        <h3 class="listing-title">${listing.title || 'Untitled Listing'}</h3>
-                        <div class="listing-price">${price}</div>
-                        <p class="text-sm text-gray-600">${listing.description ? listing.description.substring(0, 80) + '...' : 'No description provided.'}</p>
-                        <div class="listing-meta">
-                            <span>${formattedDate}</span>
-                            <span>${listing.views || 0} views</span>
-                        </div>
+                        <h3>${listing.title || 'Goat for Sale'}</h3>
+                        <p class="price">${price}</p>
+                        <p class="location"><i class="fas fa-map-marker-alt"></i> ${listing.location || 'Location not specified'}</p>
                         <div class="listing-actions">
-                            <button class="btn-sm btn-outline view-listing" data-id="${listing.id}">
-                                <i class="fas fa-eye"></i> View
+                            <button class="btn-icon edit-listing" data-id="${listing.id}" title="Edit">
+                                <i class="fas fa-edit"></i>
                             </button>
-                            <button class="btn-sm btn-outline edit-listing" data-id="${listing.id}">
-                                <i class="fas fa-edit"></i> Edit
+                            <button class="btn-icon delete-listing" data-id="${listing.id}" title="Delete">
+                                <i class="fas fa-trash-alt"></i>
                             </button>
                         </div>
                     </div>
                 </div>`;
         }
         
-        // Search and filter functionality
-        document.addEventListener('DOMContentLoaded', () => {
-            const searchInput = document.getElementById('searchListings');
-            const filterStatus = document.getElementById('filterStatus');
-            
-            // Add event listeners for search and filter
-            if (searchInput) {
-                searchInput.addEventListener('input', filterListings);
+        // Update UI based on authentication state
+        function updateUIForAuth(user) {
+            if (user) {
+                // Update profile info
+                document.getElementById('userProfile').style.display = 'block';
+                document.getElementById('loginBtn').style.display = 'none';
+                
+                // Update avatar in navbar
+                const navAvatar = document.querySelector('.user-avatar');
+                if (navAvatar) {
+                    navAvatar.src = user.photoURL || 
+                        `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email.split('@')[0])}&background=4f46e5&color=fff`;
+                }
+            } else {
+                document.getElementById('userProfile').style.display = 'none';
+                document.getElementById('loginBtn').style.display = 'inline-block';
             }
+        }
+        
+        // Handle profile picture upload
+        document.getElementById('uploadAvatar')?.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
             
-            if (filterStatus) {
-                filterStatus.addEventListener('change', filterListings);
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            try {
+                // Show loading state
+                const avatar = document.getElementById('profileAvatar');
+                avatar.style.opacity = '0.7';
+                
+                // Upload to Firebase Storage
+                const storageRef = storage.ref(`users/${user.uid}/avatar/${file.name}`);
+                await storageRef.put(file);
+                const photoURL = await storageRef.getDownloadURL();
+                
+                // Update user profile
+                await user.updateProfile({ photoURL });
+                await db.collection('users').doc(user.uid).update({
+                    photoURL,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                // Update UI
+                avatar.src = photoURL;
+                avatar.style.opacity = '1';
+                
+                // Update avatar in navbar
+                const navAvatar = document.querySelector('.user-avatar');
+                if (navAvatar) {
+                    navAvatar.src = photoURL;
+                }
+                
+            } catch (error) {
+                console.error('Error updating profile picture:', error);
+                showError('Failed to update profile picture. Please try again.');
             }
         });
         
-        function filterListings() {
-            const searchTerm = document.getElementById('searchListings').value.toLowerCase();
-            const statusFilter = document.getElementById('filterStatus').value;
-            const listings = document.querySelectorAll('.listing-card');
+        // Handle profile update
+        document.getElementById('updateProfileBtn')?.addEventListener('click', async () => {
+            const displayName = document.getElementById('displayName')?.value.trim();
+            const phone = document.getElementById('phone')?.value.trim();
+            const location = document.getElementById('location')?.value.trim();
+            const bio = document.getElementById('bio')?.value.trim();
             
-            listings.forEach(listing => {
-                const title = listing.querySelector('.listing-title').textContent.toLowerCase();
-                const description = listing.querySelector('p').textContent.toLowerCase();
-                const status = listing.querySelector('.listing-status').textContent.toLowerCase();
+            if (!displayName) {
+                showError('Display name is required');
+                return;
+            }
+            
+            try {
+                const user = auth.currentUser;
+                if (!user) throw new Error('Not authenticated');
                 
-                const matchesSearch = title.includes(searchTerm) || description.includes(searchTerm);
-                const matchesStatus = statusFilter === 'all' || status === statusFilter.toLowerCase();
+                // Show loading state
+                const updateBtn = document.getElementById('updateProfileBtn');
+                const originalBtnText = updateBtn.innerHTML;
+                updateBtn.disabled = true;
+                updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
                 
-                if (matchesSearch && matchesStatus) {
-                    listing.style.display = 'block';
-                } else {
-                    listing.style.display = 'none';
+                // Update user profile
+                await user.updateProfile({ displayName });
+                
+                // Update user document
+                const updateData = {
+                    displayName,
+                    phone: phone || '',
+                    location: location || '',
+                    bio: bio || '',
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                await db.collection('users').doc(user.uid).set(updateData, { merge: true });
+                
+                // Update local user data
+                userData = { ...userData, ...updateData };
+                
+                // Update UI
+                document.getElementById('profileName').textContent = displayName;
+                if (phone) document.getElementById('accountPhone').textContent = phone;
+                if (location) document.getElementById('accountLocation').textContent = location;
+                
+                // Update profile completion
+                updateProfileCompletion();
+                
+                // Show success message
+                showSuccess('Profile updated successfully!');
+                
+                // Re-enable button
+                updateBtn.disabled = false;
+                updateBtn.innerHTML = originalBtnText;
+                
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                showError('Failed to update profile. Please try again.');
+                
+                // Re-enable button on error
+                const updateBtn = document.getElementById('updateProfileBtn');
+                if (updateBtn) {
+                    updateBtn.disabled = false;
+                    updateBtn.textContent = 'Update Profile';
                 }
+            }
+        });
+        
+        // Handle change password
+        document.getElementById('changePasswordBtn')?.addEventListener('click', async () => {
+            const currentPassword = prompt('Enter your current password:');
+            if (!currentPassword) return;
+            
+            const newPassword = prompt('Enter your new password:');
+            if (!newPassword || newPassword.length < 6) {
+                showError('Password must be at least 6 characters long');
+                return;
+            }
+            
+            const confirmPassword = prompt('Confirm your new password:');
+            if (newPassword !== confirmPassword) {
+                showError('Passwords do not match');
+                return;
+            }
+            
+            try {
+                const user = auth.currentUser;
+                if (!user || !user.email) throw new Error('Not authenticated');
+                
+                // Reauthenticate user
+                const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword);
+                await user.reauthenticateWithCredential(credential);
+                
+                // Update password
+                await user.updatePassword(newPassword);
+                
+                showSuccess('Password updated successfully!');
+                
+            } catch (error) {
+                console.error('Error changing password:', error);
+                if (error.code === 'auth/wrong-password') {
+                    showError('Incorrect current password');
+                } else {
+                    showError('Failed to update password. Please try again.');
+                }
+            }
+        });
+        
+        // Handle delete account
+        document.getElementById('deleteAccountBtn')?.addEventListener('click', async () => {
+            if (!confirm('Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed.')) {
+                return;
+            }
+            
+            const password = prompt('Please enter your password to confirm account deletion:');
+            if (!password) return;
+            
+            try {
+                const user = auth.currentUser;
+                if (!user || !user.email) throw new Error('Not authenticated');
+                
+                // Reauthenticate user
+                const credential = firebase.auth.EmailAuthProvider.credential(user.email, password);
+                await user.reauthenticateWithCredential(credential);
+                
+                // Delete user data from Firestore (optional: you might want to keep some data)
+                await db.collection('users').doc(user.uid).delete();
+                
+                // Delete user account
+                await user.delete();
+                
+                // Redirect to home page
+                window.location.href = 'index.html';
+                
+            } catch (error) {
+                console.error('Error deleting account:', error);
+                if (error.code === 'auth/wrong-password') {
+                    showError('Incorrect password');
+                } else {
+                    showError('Failed to delete account. Please try again.');
+                }
+            }
+        });
+        
+        // Handle logout
+        document.getElementById('logoutBtn')?.addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                await auth.signOut();
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('Error signing out:', error);
+                showError('Failed to sign out. Please try again.');
+            }
+        });
+        
+        // Initialize tooltips
+        function initTooltips() {
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
             });
         }
-
-        // Logout functionality
-        document.getElementById('logoutBtn').addEventListener('click', (e) => {
-            e.preventDefault();
-            auth.signOut().then(() => {
-                window.location.href = 'index.html';
-            }).catch((error) => {
-                console.error('Error signing out:', error);
+        
+        // Initialize date picker for availability
+        function initDatePicker() {
+            const dateInput = document.getElementById('availableDate');
+            if (dateInput) {
+                flatpickr(dateInput, {
+                    minDate: 'today',
+                    dateFormat: 'Y-m-d',
+                    disable: [
+                        function(date) {
+                            // Disable weekends
+                            return (date.getDay() === 0 || date.getDay() === 6);
+                        }
+                    ]
+                });
+            }
+        }
+        
+        // Helper functions
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'alert alert-error';
+            errorDiv.innerHTML = `
+                <i class="fas fa-exclamation-circle"></i>
+                <span>${message}</span>
+                <button class="close-btn" onclick="this.parentElement.remove()">&times;</button>
+            `;
+            
+            const container = document.querySelector('.account-content') || document.body;
+            container.insertBefore(errorDiv, container.firstChild);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                errorDiv.remove();
+            }, 5000);
+        }
+        
+        function showSuccess(message) {
+            const successDiv = document.createElement('div');
+            interval = Math.floor(seconds / 2592000);
+            if (interval >= 1) return interval + ' month' + (interval === 1 ? '' : 's') + ' ago';
+            interval = Math.floor(seconds / 86400);
+            if (interval >= 1) return interval + ' day' + (interval === 1 ? '' : 's') + ' ago';
+            interval = Math.floor(seconds / 3600);
+            if (interval >= 1) return interval + ' hour' + (interval === 1 ? '' : 's') + ' ago';
+            interval = Math.floor(seconds / 60);
+            if (interval >= 1) return interval + ' minute' + (interval === 1 ? '' : 's') + ' ago';
+            return 'just now';
+        }
+        
+        // Render notifications in the UI
+        function renderNotifications(notifications) {
+            const container = document.getElementById('notificationsContainer');
+            if (!container) return;
+            
+            if (notifications.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-4">
+                        <i class="fas fa-bell-slash text-muted" style="font-size: 2rem;"></i>
+                        <p class="mt-2">No notifications yet</p>
+                    </div>`;
+                return;
+            }
+            
+            container.innerHTML = notifications.map(notif => `
+                <div class="notification-item ${!notif.isRead ? 'unread' : ''}" data-id="${notif.id}">
+                    <div class="notification-icon bg-${getNotificationColor(notif.type)}">
+                        <i class="${getNotificationIcon(notif.type)}"></i>
+                    </div>
+                    <div class="notification-content">
+                        <h4 class="notification-title">${notif.title}</h4>
+                        <p class="notification-text">${notif.message}</p>
+                        <p class="notification-time">${notif.timeAgo}</p>
+                    </div>
+                </div>`).join('');
+                
+            // Add click handlers
+            document.querySelectorAll('.notification-item').forEach(item => {
+                item.addEventListener('click', () => handleNotificationClick(item.dataset.id));
             });
+        }
+        
+        // Handle notification click
+        async function handleNotificationClick(notificationId) {
+            try {
+                // Mark as read
+                await db.collection('notifications').doc(notificationId).update({
+                    isRead: true,
+                    readAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                // Update UI
+                const notificationItem = document.querySelector(`.notification-item[data-id="${notificationId}"]`);
+                if (notificationItem) {
+                    notificationItem.classList.remove('unread');
+                    
+                    // Update unread count
+                    const notificationBadge = document.querySelector('.notification-badge');
+                    if (notificationBadge) {
+                        const currentCount = parseInt(notificationBadge.textContent) || 0;
+                        const newCount = Math.max(0, currentCount - 1);
+                        notificationBadge.textContent = newCount > 0 ? newCount : '';
+                        notificationBadge.style.display = newCount > 0 ? 'flex' : 'none';
+                    }
+                }
+                
+                // Handle navigation based on notification type
+                // You can add specific navigation logic here
+                
+            } catch (error) {
+                console.error('Error handling notification click:', error);
+            }
+        }
+        
+        // Get notification color based on type
+        function getNotificationColor(type) {
+            const colors = {
+                'message': 'primary',
+                'success': 'success',
+                'warning': 'warning',
+                'error': 'danger',
+                'info': 'info'
+            };
+            return colors[type] || 'secondary';
+        }
+        
+        // Get notification icon based on type
+        function getNotificationIcon(type) {
+            const icons = {
+                'message': 'fas fa-envelope',
+                'success': 'fas fa-check-circle',
+                'warning': 'fas fa-exclamation-triangle',
+                'error': 'fas fa-times-circle',
+                'info': 'fas fa-info-circle'
+            };
+            return icons[type] || 'fas fa-bell';
+        }
+        
+        // Show error state for notifications
+        function renderNotificationsError() {
+            const container = document.getElementById('notificationsContainer');
+            if (container) {
+                container.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        Failed to load notifications. Please try again later.
+                    </div>`;
+            }
+        }
+        
+        // Initialize components when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize tooltips
+            if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
+                initTooltips();
+            }
+            
+            // Initialize date picker
+            if (typeof flatpickr !== 'undefined') {
+                initDatePicker();
+            }
+            
+            // Handle tab switching to load data as needed
+            const tabEls = document.querySelectorAll('button[data-bs-toggle="tab"]');
+            tabEls.forEach(tabEl => {
+                tabEl.addEventListener('shown.bs.tab', (event) => {
+                    const target = event.target.getAttribute('data-bs-target');
+                    if (target === '#listings' && currentUser) {
+                        loadUserListings(currentUser.uid);
+                    } else if (target === '#notifications' && currentUser) {
+                        loadUserNotifications(currentUser.uid);
+                    }
+                });
+            });
+            
+            // Handle file input change for profile picture
+            const uploadAvatar = document.getElementById('uploadAvatar');
+            const avatarPreview = document.getElementById('profileAvatar');
+            
+            if (uploadAvatar && avatarPreview) {
+                uploadAvatar.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            avatarPreview.src = e.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+            
+            // Load notifications if on notifications tab
+            if (currentUser && window.location.hash === '#notifications') {
+                loadUserNotifications(currentUser.uid);
+            }
         });
-
-        // Edit profile button
-        document.getElementById('editProfileBtn').addEventListener('click', () => {
-            // Add edit profile functionality here
-            alert('Edit profile functionality will be implemented here');
-        });
-
-        // Sell a goat button
-        document.getElementById('sellGoatBtn').addEventListener('click', (e) => {
-            e.preventDefault();
-            window.location.href = 'create-listing.html';
+        
+        // Update the auth state change handler to load notifications
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+            } else {
+                currentUser = user;
+                await loadUserData(user);
+                await loadUserListings(user.uid);
+                updateUIForAuth(user);
+                updateStats();
+                
+                // Load notifications if on notifications tab
+                if (window.location.hash === '#notifications') {
+                    loadUserNotifications(user.uid);
+                }
+            }
         });
     </script>
 </body>
