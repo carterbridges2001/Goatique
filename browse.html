@@ -437,7 +437,12 @@
                 measurementId: "G-63D52N4Z66"
             };
             
-            firebase.initializeApp(firebaseConfig);
+            try {
+                firebase.initializeApp(firebaseConfig);
+                console.log('Firebase initialized successfully');
+            } catch (error) {
+                console.error('Firebase initialization error:', error);
+            }
         }
         
         // Initialize services
@@ -491,30 +496,68 @@
         // Load listings from Firestore
         async function loadListings() {
             try {
+                console.log('Starting to load listings...');
+                
                 // Show loading state
-                sponsoredListingsEl.innerHTML = '<div class="loading-spinner">Loading featured goats...</div>';
-                allListingsEl.innerHTML = '<div class="loading-spinner">Loading available goats...</div>';
+                sponsoredListingsEl.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading featured goats...</div>';
+                allListingsEl.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading available goats...</div>';
+                
+                // First, try to get a specific listing to test the connection
+                try {
+                    const testDoc = await db.collection('listings').doc('3nCcMFD2ssFPqDabGTeG').get();
+                    if (testDoc.exists) {
+                        console.log('Successfully connected to Firestore. Test document:', testDoc.data());
+                    } else {
+                        console.warn('Test document not found, but connection successful');
+                    }
+                } catch (testError) {
+                    console.error('Error testing Firestore connection:', testError);
+                }
                 
                 // Get all listings
+                console.log('Fetching all listings...');
                 const listingsSnapshot = await db.collection('listings')
-                    .where('status', '==', 'active')
-                    .orderBy('createdAt', 'desc')
-                    .get();
+                    // Temporarily remove filters to test
+                    // .where('status', '==', 'active')
+                    // .orderBy('createdAt', 'desc')
+                    .get()
+                    .catch(err => {
+                        console.error('Error in Firestore query:', err);
+                        throw err;
+                    });
+                
+                console.log(`Retrieved ${listingsSnapshot.size} listings`);
                 
                 allListings = [];
                 const sponsored = [];
                 const regular = [];
                 
                 listingsSnapshot.forEach(doc => {
-                    const listing = { id: doc.id, ...doc.data() };
-                    allListings.push(listing);
-                    
-                    if (listing.isSponsored) {
-                        sponsored.push(listing);
-                    } else {
-                        regular.push(listing);
+                    try {
+                        const listing = { id: doc.id, ...doc.data() };
+                        console.log('Processing listing:', listing.id, listing.title);
+                        
+                        // Ensure required fields exist
+                        if (!listing.status) {
+                            listing.status = 'active'; // Default status
+                        }
+                        if (!listing.createdAt) {
+                            listing.createdAt = new Date(); // Default timestamp
+                        }
+                        
+                        allListings.push(listing);
+                        
+                        if (listing.isSponsored) {
+                            sponsored.push(listing);
+                        } else {
+                            regular.push(listing);
+                        }
+                    } catch (docError) {
+                        console.error('Error processing document:', doc.id, docError);
                     }
                 });
+                
+                console.log(`Found ${sponsored.length} sponsored and ${regular.length} regular listings`);
                 
                 // Display sponsored listings
                 displayListings(sponsored, sponsoredListingsEl);
@@ -523,11 +566,16 @@
                 filterAndDisplayListings();
                 
             } catch (error) {
-                console.error('Error loading listings:', error);
+                console.error('Error in loadListings:', error);
+                const errorMessage = error.message || 'Unknown error occurred';
+                console.error('Error details:', error);
+                
                 allListingsEl.innerHTML = `
                     <div class="error-message" style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #ef4444;">
                         <i class="fas fa-exclamation-circle"></i>
-                        <p>Error loading listings. Please try again later.</p>
+                        <h3>Error loading listings</h3>
+                        <p>${errorMessage}</p>
+                        <p>Please check the console for more details.</p>
                     </div>`;
             }
         }
