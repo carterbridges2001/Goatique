@@ -159,48 +159,88 @@
         </div>
     </footer>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+    <!-- Firebase SDKs (compat version for better browser support) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
     
-    <!-- Firebase Configuration -->
     <script>
-      // Your web app's Firebase configuration
-      const firebaseConfig = {
-        apiKey: "AIzaSyC7draXchRUCkK1Hut1eD-Km1_Y4f_AtCU",
-        authDomain: "goatique-536bd.firebaseapp.com",
-        projectId: "goatique-536bd",
-        storageBucket: "goatique-536bd.firebasestorage.app",
-        messagingSenderId: "63709506575",
-        appId: "1:63709506575:web:864e9369dcf7021859077a",
-        measurementId: "G-63D52N4Z66"
-      };
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC7draXchRUCkK1Hut1eD-Km1_Y4f_AtCU",
+            authDomain: "goatique-536bd.firebaseapp.com",
+            projectId: "goatique-536bd",
+            storageBucket: "goatique-536bd.appspot.com",
+            messagingSenderId: "63709506575",
+            appId: "1:63709506575:web:864e9369dcf7021859077a",
+            measurementId: "G-63D52N4Z66"
+        };
 
-      // Initialize Firebase
-      const app = firebase.initializeApp(firebaseConfig);
-      
-      // Initialize services
-      const auth = firebase.auth();
-      const db = firebase.firestore();
-      const storage = firebase.storage();
-      
-      // Make them globally available
-      window.auth = auth;
-      window.db = db;
-      window.storage = storage;
-      
-      // Test connection
-      console.log('Firebase initialized successfully!');
+        // Initialize Firebase
+        try {
+            // Initialize Firebase if it hasn't been initialized already
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+                console.log('Firebase initialized successfully');
+            } else {
+                firebase.app(); // if already initialized, use that one
+                console.log('Using existing Firebase instance');
+            }
+
+            // Initialize services
+            const auth = firebase.auth();
+            const db = firebase.firestore();
+            const storage = firebase.storage();
+            
+            // Enable offline persistence
+            db.enablePersistence()
+                .catch((err) => {
+                    if (err.code === 'failed-precondition') {
+                        console.warn('Multiple tabs open, persistence can only be enabled in one tab at a time.');
+                    } else if (err.code === 'unimplemented') {
+                        console.warn('The current browser does not support all of the features required to enable persistence');
+                    }
+                });
+            
+            // Make them globally available
+            window.firebase = firebase;
+            window.auth = auth;
+            window.db = db;
+            window.storage = storage;
+            
+            console.log('Firebase services initialized');
+            
+        } catch (error) {
+            console.error('Firebase initialization error:', error);
+        }
     </script>
     
     <!-- Your app's JavaScript -->
     <script src="auth.js"></script>
+    
+    <!-- Your app's JavaScript -->
+    <script src="auth.js"></script>
+    
     <script>
         // Fetch featured listings from Firestore
         document.addEventListener('DOMContentLoaded', () => {
             const featuredGrid = document.getElementById('featuredGoatsGrid');
+            
+            // Function to show error message
+            function showError(message) {
+                console.error(message);
+                if (featuredGrid) {
+                    featuredGrid.innerHTML = `
+                        <div class="error-message" style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #ef4444;">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <p>${message}</p>
+                            <button onclick="window.location.reload()" class="btn btn-outline" style="margin-top: 1rem;">
+                                <i class="fas fa-sync-alt"></i> Try Again
+                            </button>
+                        </div>`;
+                }
+            }
             
             // Function to create a goat card
             function createGoatCard(goat) {
@@ -230,55 +270,198 @@
             
             // Function to fetch and display featured listings
             async function loadFeaturedListings() {
+                console.log('1. Starting loadFeaturedListings');
+                
+                if (!featuredGrid) {
+                    console.error('2. Featured grid element not found');
+                    return;
+                }
+                
                 try {
                     // Show loading state
+                    console.log('3. Setting loading state');
                     featuredGrid.innerHTML = `
-                        <div class="loading-spinner">
-                            <i class="fas fa-spinner fa-spin"></i> Loading featured goats...
+                        <div class="loading-spinner" style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
+                            <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #4f46e5; margin-bottom: 1rem;"></i>
+                            <p>Loading featured goats...</p>
+                            <p id="debug-status" style="font-size: 0.8rem; color: #6b7280; margin-top: 0.5rem;">Initializing...</p>
                         </div>`;
                     
-                    // Get featured listings (sponsored or recently added)
-                    const snapshot = await db.collection('listings')
-                        .where('status', '==', 'active')
-                        .orderBy('createdAt', 'desc')
-                        .limit(3)
-                        .get();
+                    const debugEl = document.getElementById('debug-status');
+                    const updateStatus = (msg) => {
+                        console.log('STATUS:', msg);
+                        if (debugEl) debugEl.textContent = msg;
+                    };
+                    
+                    updateStatus('Connecting to Firestore...');
+                    console.log('4. Before Firestore query');
+                    
+                    // Test Firestore connection first
+                    try {
+                        updateStatus('Testing Firestore connection...');
+                        await db.collection('listings').limit(1).get();
+                        console.log('4.1 Firestore connection test successful');
+                    } catch (testError) {
+                        console.error('Firestore connection test failed:', testError);
+                        throw new Error('Could not connect to the database. Please check your internet connection.');
+                    }
+                    
+                    // First, try to get any active listings (with error handling for Firestore)
+                    let snapshot;
+                    updateStatus('Fetching listings...');
+                    console.log('5. Attempting to fetch listings');
+                    
+                    try {
+                        console.log('5.1 Trying ordered query');
+                        updateStatus('Trying ordered query...');
+                        snapshot = await Promise.race([
+                            db.collection('listings')
+                                .limit(4)
+                                .get(),
+                            new Promise((_, reject) => 
+                                setTimeout(() => reject(new Error('Query timeout')), 5000)
+                            )
+                        ]);
+                        console.log('5.2 Ordered query successful', snapshot.size);
+                        updateStatus(`Found ${snapshot.size} listings`);
+                    } catch (queryError) {
+                        console.error('5.3 Ordered query failed, trying simple query:', queryError);
+                        updateStatus('Trying alternative query...');
+                        
+                        try {
+                            snapshot = await db.collection('listings')
+                                .limit(4)
+                                .get({
+                                    source: 'cache'
+                                });
+                            console.log('5.4 Simple query from cache successful', snapshot.size);
+                            updateStatus(`Found ${snapshot.size} cached listings`);
+                        } catch (simpleQueryError) {
+                            console.error('5.5 All queries failed:', simpleQueryError);
+                            throw new Error('Unable to load listings. Please check your connection and try again.');
+                        }
+                    }
+                    
+                    if (!snapshot) {
+                        console.error('6.1 No snapshot returned from query');
+                        throw new Error('No data returned from the server');
+                    }
+                    
+                    console.log('6. Query complete, processing', snapshot.size, 'listings');
+                    updateStatus(`Processing ${snapshot.size} listings...`);
                     
                     if (snapshot.empty) {
+                        console.log('6.2 No listings found in the database');
                         featuredGrid.innerHTML = `
                             <div class="no-listings" style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
                                 <i class="fas fa-kiwi-bird" style="font-size: 2.5rem; color: #e5e7eb; margin-bottom: 1rem;"></i>
-                                <h3>No Featured Goats Available</h3>
+                                <h3>No Goats Available</h3>
                                 <p>Check back soon for new listings!</p>
+                                <div style="margin-top: 1.5rem;">
+                                    <a href="create-listing.html" class="btn btn-primary">
+                                        <i class="fas fa-plus"></i> List Your Goat
+                                    </a>
+                                    <button onclick="window.location.reload()" class="btn btn-outline" style="margin-left: 0.5rem;">
+                                        <i class="fas fa-sync-alt"></i> Refresh
+                                    </button>
+                                </div>
                             </div>`;
                         return;
                     }
                     
-                    // Clear loading state
-                    featuredGrid.innerHTML = '';
+                    // Process and validate listings
+                    console.log('7. Processing documents');
+                    updateStatus('Processing documents...');
                     
-                    // Add each listing to the grid
+                    const validListings = [];
+                    const docPromises = [];
+                    
+                    // Process each document with error handling for individual docs
                     snapshot.forEach(doc => {
-                        const goat = { id: doc.id, ...doc.data() };
-                        const card = document.createElement('div');
-                        card.innerHTML = createGoatCard(goat);
-                        featuredGrid.appendChild(card.firstElementChild);
+                        try {
+                            console.log('7.1 Processing document:', doc.id);
+                            const data = doc.data();
+                            
+                            if (!data) {
+                                console.warn('7.2 Document has no data:', doc.id);
+                                return;
+                            }
+                            
+                            console.log('7.3 Document data:', { id: doc.id, ...data });
+                            
+                            // Basic validation - only require that it's an object with some data
+                            validListings.push({
+                                id: doc.id,
+                                title: data.title || 'Goat for Sale',
+                                breed: data.breed || 'Mixed breed',
+                                price: data.price || 0,
+                                location: data.location || 'Location not specified',
+                                images: Array.isArray(data.images) ? data.images : [],
+                                isSponsored: Boolean(data.isSponsored),
+                                ...data
+                            });
+                            
+                        } catch (e) {
+                            console.error('7.4 Error processing document:', doc.id, e);
+                        }
                     });
                     
+                    console.log('8. Processed', validListings.length, 'valid listings');
+                    updateStatus(`Processed ${validListings.length} valid listings`);
+                    
+                    if (validListings.length === 0) {
+                        console.warn('8.1 No valid listings after processing');
+                        throw new Error('No valid goat listings found in the database');
+                    }
+                    
+                    // Clear and display listings
+                    console.log('9. Rendering listings to the page');
+                    updateStatus('Rendering listings...');
+                    
+                    // Clear the grid
+                    featuredGrid.innerHTML = '';
+                    
+                    // Only show max 3 listings
+                    const listingsToShow = validListings.slice(0, 3);
+                    
+                    // Create and append cards
+                    listingsToShow.forEach((goat, index) => {
+                        try {
+                            console.log(`9.1 Rendering goat ${index + 1}/${listingsToShow.length}`, goat.id);
+                            const card = document.createElement('div');
+                            card.className = 'goat-card';
+                            card.innerHTML = createGoatCard(goat);
+                            featuredGrid.appendChild(card);
+                        } catch (e) {
+                            console.error(`Error rendering goat ${index}:`, e);
+                        }
+                    });
+                    
+                    console.log('10. Listings rendered successfully');
+                    updateStatus('Done!');
+                    
                 } catch (error) {
-                    console.error('Error loading featured goats:', error);
-                    featuredGrid.innerHTML = `
-                        <div class="error-message" style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #ef4444;">
-                            <i class="fas fa-exclamation-circle"></i>
-                            <p>Error loading featured goats. Please refresh the page or try again later.</p>
-                        </div>`;
+                    console.error('Error in loadFeaturedListings:', error);
+                    showError(error.message || 'Failed to load featured goats. Please try again later.');
                 }
             }
             
-            // Load featured listings when the page loads
-            if (featuredGrid) {
-                loadFeaturedListings();
+            // Wait for Firebase to be ready
+            function checkFirebase() {
+                console.log('Checking Firebase...');
+                if (window.db) {
+                    console.log('Firebase is ready, loading listings...');
+                    if (featuredGrid) {
+                        loadFeaturedListings();
+                    }
+                } else {
+                    console.log('Firebase not ready yet, waiting...');
+                    setTimeout(checkFirebase, 500);
+                }
             }
+            
+            // Start checking for Firebase
+            checkFirebase();
         });
     </script>
     <script src="app.js"></script>
