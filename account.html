@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Account - Goatique</title>
+    <title>My Account - Ruminary</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -19,6 +19,29 @@
             margin-bottom: 2rem;
             padding-bottom: 1.5rem;
             border-bottom: 1px solid #e5e7eb;
+        }
+        .profile-avatar-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin-right: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .avatar-initials {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: #4f46e5;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            overflow: hidden;
         }
         .profile-avatar {
             width: 100px;
@@ -156,7 +179,8 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="container">
-            <div class="logo">GOATIQUE</div>
+            <a href="index.html" class="logo">GOATIQUE</a>
+            <!-- User profile section removed from nav on account page -->
             <div class="nav-links">
                 <a href="index.html">Home</a>
                 <a href="browse.html" class="active">Browse Goats</a>
@@ -221,17 +245,20 @@
     <div class="container account-container">
         <div class="account-header">
             <div class="profile-avatar-container">
-                <img src="https://ui-avatars.com/api/?name=User+Name&background=4f46e5&color=fff" alt="Profile" class="profile-avatar" id="profileAvatar">
-                <button class="btn-edit-avatar" title="Change Photo">
+                <div class="avatar-initials" id="userInitials">
+                    <!-- Initials will be set by JavaScript -->
+                </div>
+                <button class="btn-edit-avatar" title="Change Photo" id="uploadAvatarBtn">
                     <i class="fas fa-camera"></i>
                 </button>
+                <input type="file" id="uploadAvatar" accept="image/*" style="display: none;">
             </div>
             <div class="profile-info">
                 <div class="profile-header">
-                    <h1 id="userName">Loading...</h1>
-                    <span class="member-since" id="memberSince">Member since 2023</span>
+                    <h1 id="profileName">Loading...</h1>
+                    <span class="member-since" id="memberSince">Member since <span id="joinDate">2023</span></span>
                 </div>
-                <p class="profile-email" id="userEmail">user@example.com</p>
+                <p class="profile-email" id="userEmail">Loading email...</p>
                 <div class="profile-actions">
                     <button class="btn-edit" id="editProfileBtn">
                         <i class="fas fa-edit"></i> Edit Profile
@@ -255,48 +282,48 @@
 
         <div class="account-sections">
             <div class="account-sidebar">
-                <ul class="account-nav nav flex-column">
+                <ul class="account-nav nav flex-column" id="accountNav">
                     <li class="nav-item">
-                        <a href="#overview" class="nav-link active" data-bs-toggle="tab" data-bs-target="#overview">
+                        <a href="account.html" class="nav-link active">
                             <i class="fas fa-user me-2"></i> Profile Overview
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#purchases" class="nav-link" data-bs-toggle="tab" data-bs-target="#purchases">
+                        <a href="purchases.html" class="nav-link">
                             <i class="fas fa-shopping-bag me-2"></i> My Purchases 
                             <span id="purchasesCount" class="badge bg-secondary ms-auto">0</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#listings" class="nav-link" data-bs-toggle="tab" data-bs-target="#listings">
+                        <a href="my-listings.html" class="nav-link">
                             <i class="fas fa-tag me-2"></i> My Listings 
                             <span id="listingsCount" class="badge bg-secondary ms-auto">0</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#saved" class="nav-link" data-bs-toggle="tab" data-bs-target="#saved">
+                        <a href="saved-items.html" class="nav-link">
                             <i class="fas fa-heart me-2"></i> Saved Items 
                             <span id="savedCount" class="badge bg-secondary ms-auto">0</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#payments" class="nav-link" data-bs-toggle="tab" data-bs-target="#payments">
+                        <a href="payment-methods.html" class="nav-link">
                             <i class="fas fa-credit-card me-2"></i> Payment Methods
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#settings" class="nav-link" data-bs-toggle="tab" data-bs-target="#settings">
+                        <a href="account-settings.html" class="nav-link">
                             <i class="fas fa-cog me-2"></i> Account Settings
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#notifications" class="nav-link" data-bs-toggle="tab" data-bs-target="#notifications">
+                        <a href="notifications.html" class="nav-link">
                             <i class="fas fa-bell me-2"></i> Notifications 
                             <span id="notificationsCount" class="badge bg-primary ms-auto">0</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="help.html" class="nav-link">
+                        <a href="help-center.html" class="nav-link">
                             <i class="fas fa-question-circle me-2"></i> Help & Support
                         </a>
                     </li>
@@ -824,6 +851,24 @@
             }
         }
 
+        // Get user initials from name or email
+        function getUserInitials(user) {
+            if (user.displayName) {
+                return user.displayName
+                    .split(' ')
+                    .map(n => n[0])
+                    .join('')
+                    .toUpperCase()
+                    .substring(0, 2);
+            }
+            return user.email.substring(0, 2).toUpperCase();
+        }
+
+        // Format date to Month YYYY
+        function formatJoinDate(date) {
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+        }
+
         // Load user data from Firestore
         async function loadUserData(user) {
             try {
@@ -834,8 +879,21 @@
                     // Update profile section
                     const displayName = user.displayName || user.email.split('@')[0];
                     document.getElementById('profileName').textContent = displayName;
-                    document.getElementById('displayName').value = displayName;
-                    document.getElementById('profileEmail').textContent = user.email;
+                    document.getElementById('userEmail').textContent = user.email;
+                    
+                    // Set user initials
+                    const initials = getUserInitials(user);
+                    const initialsElement = document.getElementById('userInitials');
+                    if (initialsElement) {
+                        initialsElement.textContent = initials;
+                    }
+                    
+                    // Set join date
+                    const joinDate = userData.createdAt?.toDate() || new Date(user.metadata.creationTime);
+                    const joinDateElement = document.getElementById('joinDate');
+                    if (joinDateElement) {
+                        joinDateElement.textContent = formatJoinDate(joinDate);
+                    }
                     
                     // Set profile image or default
                     const profileAvatar = document.getElementById('profileAvatar');
@@ -999,22 +1057,61 @@
                 </div>`;
         }
         
+        // Check if current page is the account page
+        function isAccountPage() {
+            return window.location.pathname.includes('account.html');
+        }
+
         // Update UI based on authentication state
         function updateUIForAuth(user) {
+            const userProfile = document.getElementById('userProfile');
+            const loginBtn = document.getElementById('loginBtn');
+            
             if (user) {
-                // Update profile info
-                document.getElementById('userProfile').style.display = 'block';
-                document.getElementById('loginBtn').style.display = 'none';
-                
-                // Update avatar in navbar
-                const navAvatar = document.querySelector('.user-avatar');
-                if (navAvatar) {
-                    navAvatar.src = user.photoURL || 
-                        `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email.split('@')[0])}&background=4f46e5&color=fff`;
+                // Hide user profile in nav if on account page
+                if (userProfile) {
+                    userProfile.style.display = isAccountPage() ? 'none' : 'flex';
                 }
+                
+                if (loginBtn) loginBtn.style.display = 'none';
+                
+                // Get user display name (fallback to email username)
+                const displayName = user.displayName || user.email.split('@')[0];
+                
+                // Only update nav elements if not on account page
+                if (!isAccountPage()) {
+                    const navUserName = document.getElementById('navUserName');
+                    const navUserEmail = document.getElementById('navUserEmail');
+                    const navUserAvatar = document.getElementById('navUserAvatar');
+                    
+                    if (navUserName) navUserName.textContent = displayName;
+                    if (navUserEmail) navUserEmail.textContent = user.email;
+                    
+                    if (navUserAvatar) {
+                        navUserAvatar.src = user.photoURL || 
+                            `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=4f46e5&color=fff`;
+                        navUserAvatar.alt = `${displayName}'s profile picture`;
+                    }
+                }
+                
+                // Always update profile page header if elements exist
+                const profileName = document.getElementById('profileName');
+                if (profileName) profileName.textContent = displayName;
+                
+                const profileEmail = document.getElementById('profileEmail');
+                if (profileEmail) profileEmail.textContent = user.email;
+                
             } else {
-                document.getElementById('userProfile').style.display = 'none';
-                document.getElementById('loginBtn').style.display = 'inline-block';
+                // User is signed out
+                if (userProfile) userProfile.style.display = 'none';
+                if (loginBtn) loginBtn.style.display = 'inline-block';
+                
+                // Redirect to login if not on login/signup page
+                if (!window.location.pathname.includes('login.html') && 
+                    !window.location.pathname.includes('signup.html') &&
+                    !isAccountPage()) {
+                    window.location.href = 'login.html';
+                }
             }
         }
         
@@ -1269,6 +1366,142 @@
             interval = Math.floor(seconds / 60);
             if (interval >= 1) return interval + ' minute' + (interval === 1 ? '' : 's') + ' ago';
             return 'just now';
+        }
+        
+        // Load user notifications
+        async function loadUserNotifications(userId) {
+            const notificationsContainer = document.getElementById('notificationsContainer');
+            if (!notificationsContainer) return;
+            
+            try {
+                // Show loading state
+                const loadingElement = document.createElement('div');
+                loadingElement.id = 'notificationsLoading';
+                loadingElement.className = 'text-center py-5';
+                loadingElement.innerHTML = `
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Loading notifications...</p>`;
+                
+                notificationsContainer.innerHTML = '';
+                notificationsContainer.appendChild(loadingElement);
+                
+                // Get notifications from Firestore
+                const notificationsRef = db.collection('notifications')
+                    .where('userId', '==', userId)
+                    .orderBy('createdAt', 'desc')
+                    .limit(10);
+                
+                const snapshot = await notificationsRef.get();
+                
+                // Remove loading state
+                if (loadingElement.parentNode === notificationsContainer) {
+                    notificationsContainer.removeChild(loadingElement);
+                }
+                
+                if (snapshot.empty) {
+                    notificationsContainer.innerHTML = `
+                        <div class="text-center py-5">
+                            <i class="fas fa-bell-slash fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No notifications yet</p>
+                        </div>`;
+                    return;
+                }
+                
+                let unreadCount = 0;
+                const notifications = [];
+                const now = new Date();
+                
+                // Process notifications
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const createdAt = data.createdAt?.toDate ? data.createdAt.toDate() : new Date();
+                    const timeDiff = Math.floor((now - createdAt) / 1000); // in seconds
+                    
+                    const notification = { 
+                        id: doc.id, 
+                        ...data,
+                        createdAt: createdAt,
+                        timeAgo: formatTimeAgo(timeDiff)
+                    };
+                    
+                    if (!notification.isRead) unreadCount++;
+                    notifications.push(notification);
+                });
+                
+                // Update notification badge in the UI
+                updateNotificationBadge(unreadCount);
+                
+                // Render the notifications
+                renderNotifications(notifications);
+                
+                // Add click handler for mark all as read button
+                const markAllReadBtn = document.getElementById('markAllReadBtn');
+                if (markAllReadBtn) {
+                    markAllReadBtn.onclick = () => markAllNotificationsAsRead(notifications);
+                }
+                
+            } catch (error) {
+                console.error('Error loading notifications:', error);
+                renderNotificationsError();
+            }
+        }
+        
+        // Mark all notifications as read
+        async function markAllNotificationsAsRead(notifications) {
+            const unreadNotifications = notifications.filter(n => !n.isRead);
+            if (unreadNotifications.length === 0) return;
+            
+            try {
+                // Update all unread notifications in a batch
+                const batch = db.batch();
+                const now = new Date();
+                
+                unreadNotifications.forEach(notification => {
+                    const notificationRef = db.collection('notifications').doc(notification.id);
+                    batch.update(notificationRef, {
+                        isRead: true,
+                        readAt: now
+                    });
+                });
+                
+                await batch.commit();
+                
+                // Update UI
+                unreadNotifications.forEach(notification => {
+                    notification.isRead = true;
+                    const notificationElement = document.querySelector(`.notification-item[data-id="${notification.id}"]`);
+                    if (notificationElement) {
+                        notificationElement.classList.remove('unread');
+                    }
+                });
+                
+                // Update notification badge
+                updateNotificationBadge(0);
+                
+                showSuccess('All notifications marked as read');
+                
+            } catch (error) {
+                console.error('Error marking notifications as read:', error);
+                showError('Failed to mark notifications as read. Please try again.');
+            }
+        }
+        
+        // Update notification badge in the UI
+        function updateNotificationBadge(count) {
+            const badge = document.getElementById('notificationsCount');
+            if (!badge) return;
+            
+            badge.textContent = count > 0 ? count : '';
+            badge.style.display = count > 0 ? 'flex' : 'none';
+            
+            // Also update the badge in the navigation menu if it exists
+            const navBadge = document.querySelector('.account-nav .badge');
+            if (navBadge) {
+                navBadge.textContent = count > 0 ? count : '';
+                navBadge.style.display = count > 0 ? 'flex' : 'none';
+            }
         }
         
         // Render notifications in the UI
