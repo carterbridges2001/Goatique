@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sell Your Goat - Goatique</title>
+    <title>Sell Your Goat - Ruminary</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -191,6 +191,48 @@
             </div>
             
             <form id="listingForm">
+                <!-- Verification Status (Hidden field, will be set by admin) -->
+                <input type="hidden" id="isVerified" value="false">
+                <input type="hidden" id="verificationDate" value="">
+                
+                <!-- Documentation Section -->
+                <h3>Documentation</h3>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="hasHealthRecords"> 
+                        Health Records Available
+                    </label>
+                    <div id="healthRecordsUpload" style="display: none; margin-top: 10px;">
+                        <label>Upload Health Records (PDF/Images)</label>
+                        <input type="file" id="healthRecordsFiles" multiple accept=".pdf,.jpg,.jpeg,.png">
+                        <div id="healthRecordsPreview" class="document-preview"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="hasPedigree"> 
+                        Pedigree Documentation Available
+                    </label>
+                    <div id="pedigreeUpload" style="display: none; margin-top: 10px;">
+                        <label>Upload Pedigree Documents</label>
+                        <input type="file" id="pedigreeFiles" multiple accept=".pdf,.jpg,.jpeg,.png">
+                        <div id="pedigreePreview" class="document-preview"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="hasAwards"> 
+                        Show Awards/Certifications (if any)
+                    </label>
+                    <div id="awardsUpload" style="display: none; margin-top: 10px;">
+                        <label>Upload Award Certificates</label>
+                        <input type="file" id="awardsFiles" multiple accept=".pdf,.jpg,.jpeg,.png">
+                        <div id="awardsPreview" class="document-preview"></div>
+                    </div>
+                </div>
+
                 <!-- Basic Information -->
                 <h3>Basic Information</h3>
                 <div class="form-group">
@@ -510,6 +552,7 @@
                 // Upload images to Firebase Storage
                 const imageUrls = [];
                 
+                // Upload main listing images
                 for (const item of uploadedFiles) {
                     const file = item.file;
                     const storageRef = storage.ref(`listings/${user.uid}/${Date.now()}_${file.name}`);
@@ -518,35 +561,41 @@
                     imageUrls.push(downloadURL);
                 }
                 
-                // Create listing data
+                // Create listing data object with verification and documentation fields
                 const listingData = {
-                    title: document.getElementById('title').value,
-                    description: document.getElementById('description').value,
-                    breed: document.getElementById('breed').value,
-                    age: parseInt(document.getElementById('age').value),
-                    gender: document.getElementById('gender').value,
+                    // Basic information
+                    title: document.getElementById('title').value.trim(),
+                    description: document.getElementById('description').value.trim(),
                     price: parseFloat(document.getElementById('price').value),
-                    location: document.getElementById('location').value,
-                    images: imageUrls,
-                    healthInfo: {
-                        vaccinated: document.getElementById('vaccinated').value === 'yes',
-                        dewormed: document.getElementById('dewormed').value === 'yes',
-                        notes: document.getElementById('healthNotes').value
-                    },
-                    contact: {
-                        name: document.getElementById('contactName').value,
-                        phone: document.getElementById('contactPhone').value || ''
-                    },
-                    sellerId: user.uid,
-                    status: 'active',
+                    breed: document.getElementById('breed').value,
+                    gender: document.getElementById('gender').value,
+                    age: document.getElementById('age').value,
+                    location: document.getElementById('location').value.trim(),
+                    contactEmail: document.getElementById('contactEmail').value.trim(),
+                    contactPhone: document.getElementById('contactPhone').value.trim(),
+                    isSponsored: document.getElementById('isSponsored').checked,
+                    keywords: document.getElementById('keywords').value.trim().toLowerCase().split(',').map(k => k.trim()).filter(k => k !== ''),
+                    images: imageUrls, // Array of image URLs
+                    
+                    // Verification and documentation
+                    isVerified: false, // Will be set to true after admin verification
+                    verificationDate: null,
+                    hasHealthRecords: document.getElementById('hasHealthRecords').checked,
+                    hasPedigree: document.getElementById('hasPedigree').checked,
+                    hasAwards: document.getElementById('hasAwards').checked,
+                    
+                    // System fields
+                    status: 'pending', // New listings go to pending for review
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    // Add searchable keywords
-                    keywords: [
-                        document.getElementById('breed').value.toLowerCase(),
-                        document.getElementById('gender').value.toLowerCase(),
-                        ...document.getElementById('location').value.toLowerCase().split(/[,\s]+/)
-                    ]
+                    userId: user.uid,
+                    userName: user.displayName || 'Anonymous',
+                    userPhoto: user.photoURL || '',
+                    
+                    // Document URLs (will be populated after upload)
+                    healthRecords: [],
+                    pedigreeDocs: [],
+                    awardDocs: []
                 };
                 
                 // Add listing to Firestore

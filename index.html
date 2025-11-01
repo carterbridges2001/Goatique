@@ -37,15 +37,52 @@
     <header class="hero">
         <div class="container">
             <div class="hero-content">
-                <h1>Premium Quality Goats for Sale</h1>
-                <p>Discover our carefully selected, healthy goats for your farm or homestead.</p>
+                <h1>America's Premier Goat Marketplace</h1>
+                <p>Connecting discerning breeders with premium, verified goats through our trusted online auction platform.</p>
                 <div class="hero-buttons">
-                    <a href="#goats" class="btn btn-primary">View Goats</a>
-                    <a href="#contact" class="btn btn-outline">Contact Us</a>
+                    <a href="browse.html" class="btn btn-primary">Browse Listings</a>
+                    <a href="#why-choose" class="btn btn-outline">Why Choose Us</a>
                 </div>
             </div>
         </div>
     </header>
+
+    <!-- Value Proposition -->
+    <section class="value-prop" id="why-choose">
+        <div class="container">
+            <h2>Why Breeders Choose Ruminary Exchange</h2>
+            <div class="value-grid">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Verified Sellers</h3>
+                    <p>Every breeder is thoroughly vetted to ensure quality and authenticity.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-gavel"></i>
+                    </div>
+                    <h3>Live Auctions</h3>
+                    <p>Real-time bidding with secure escrow for worry-free transactions.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h3>Complete Documentation</h3>
+                    <p>Health records, pedigrees, and ownership history for every animal.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <h3>Nationwide Network</h3>
+                    <p>Connect with buyers and sellers across the country.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- New & Featured Goats -->
     <section id="featured" class="featured-goats">
@@ -134,7 +171,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3>GOATIQUE</h3>
+                    <h3>RUMINARY EXCHANGE</h3>
                     <p>Premium quality goats for sale. Healthy, happy, and ready for their forever homes.</p>
                 </div>
                 <div class="footer-section">
@@ -149,12 +186,12 @@
                 <div class="footer-section">
                     <h4>Contact Us</h4>
                     <p><i class="fas fa-phone"></i> (555) 123-4567</p>
-                    <p><i class="fas fa-envelope"></i> info@goatique.store</p>
+                    <p><i class="fas fa-envelope"></i> info@ruminaryexchange.com</p>
                     <p><i class="fas fa-map-marker-alt"></i> 123 Farm Road, Goatville, TX 78901</p>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2023 Goatique. All rights reserved.</p>
+                <p>&copy; 2023 Ruminary Exchange. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -246,17 +283,50 @@
                 }
             }
             
-            // Function to format image URL
-            function getImageUrl(imagePath) {
+            // Function to get image URL from Firebase Storage
+            async function getImageUrl(imagePath) {
                 if (!imagePath) return 'https://via.placeholder.com/400x300?text=No+Image';
-                if (imagePath.startsWith('http')) return imagePath;
-                if (imagePath.startsWith('gs://')) {
-                    const pathParts = imagePath.split('/');
-                    const bucket = pathParts[2];
-                    const encodedPath = pathParts.slice(3).map(encodeURIComponent).join('/');
-                    return `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${encodedPath}?alt=media`;
+                
+                // If it's already a URL, return it
+                if (typeof imagePath === 'string' && imagePath.startsWith('http')) {
+                    return imagePath;
                 }
-                return imagePath;
+                
+                // If it's a Firebase Storage reference
+                if (typeof imagePath === 'string' && imagePath.startsWith('gs://')) {
+                    try {
+                        // Convert gs:// URL to a storage reference
+                        const storageRef = firebase.storage().refFromURL(imagePath);
+                        // Get the download URL
+                        const url = await storageRef.getDownloadURL();
+                        return url;
+                    } catch (error) {
+                        console.error('Error getting image URL:', error);
+                        return 'https://via.placeholder.com/400x300?text=Image+Not+Found';
+                    }
+                }
+                
+                // If it's a file object (from file input)
+                if (imagePath instanceof File || imagePath instanceof Blob) {
+                    return URL.createObjectURL(imagePath);
+                }
+                
+                // If it's an object with a URL or path property
+                if (typeof imagePath === 'object') {
+                    if (imagePath.url) return imagePath.url;
+                    if (imagePath.path) {
+                        try {
+                            const storageRef = firebase.storage().ref(imagePath.path);
+                            const url = await storageRef.getDownloadURL();
+                            return url;
+                        } catch (error) {
+                            console.error('Error getting image URL from path:', error);
+                        }
+                    }
+                }
+                
+                // Default fallback
+                return 'https://via.placeholder.com/400x300?text=No+Image';
             }
             
             // Function to create a goat card
