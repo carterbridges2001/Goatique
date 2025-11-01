@@ -242,34 +242,16 @@ function handleLogout() {
     });
 }
 
-// Helper function to show error messages
+// Helper function to show error messages (disabled)
 function showError(message) {
-    const errorContainer = document.getElementById('errorMessage');
-    if (!errorContainer) return;
-    
-    errorContainer.textContent = message;
-    errorContainer.style.display = 'block';
-    
-    // Auto-hide after 5 seconds
-    setTimeout(() => {
-        errorContainer.style.display = 'none';
-    }, 5000);
+    console.error('Error:', message); // Log to console instead of showing to user
+    // Don't display any error messages to the user
 }
 
-// Helper function to show success messages
+// Helper function to show success messages (disabled)
 function showSuccess(message) {
-    const successContainer = document.getElementById('successMessage') || 
-                           document.getElementById('errorMessage'); // Fallback to error container if success container doesn't exist
-    if (!successContainer) return;
-    
-    successContainer.textContent = message;
-    successContainer.style.color = '#28a745';
-    successContainer.style.display = 'block';
-    
-    // Auto-hide after 5 seconds
-    setTimeout(() => {
-        successContainer.style.display = 'none';
-    }, 5000);
+    console.log('Success:', message); // Log to console instead of showing to user
+    // Don't display any success messages to the user
 }
 
 // Helper function to get user-friendly error messages

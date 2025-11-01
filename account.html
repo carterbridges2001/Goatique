@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Account - Ruminary</title>
+    <title>My Account - RUMINARY EXCHANGE</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -179,11 +179,11 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="container">
-            <a href="index.html" class="logo">GOATIQUE</a>
-            <!-- User profile section removed from nav on account page -->
+            <div class="logo">RUMINARY EXCHANGE</div>
             <div class="nav-links">
                 <a href="index.html">Home</a>
-                <a href="browse.html" class="active">Browse Goats</a>
+                <a href="browse.html">Browse Goats</a>
+                <a href="notifications.html">Notifications</a>
                 <a href="about.html">About</a>
                 <a href="contact.html">Contact</a>
             </div>
@@ -386,18 +386,6 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="account-sections">
-                    <div class="account-sidebar">
-                        <ul class="account-nav">
-                            <li><a href="#overview" class="nav-link active" data-bs-toggle="tab" data-bs-target="#overview"><i class="fas fa-user"></i> Profile Overview</a></li>
-                            <li><a href="#purchases" class="nav-link" data-bs-toggle="tab" data-bs-target="#purchases"><i class="fas fa-shopping-bag"></i> My Purchases <span id="purchasesCount" class="badge">0</span></a></li>
-                            <li><a href="#listings" class="nav-link" data-bs-toggle="tab" data-bs-target="#listings"><i class="fas fa-tag"></i> My Listings <span id="listingsCount" class="badge">0</span></a></li>
-                            <li><a href="#saved" class="nav-link" data-bs-toggle="tab" data-bs-target="#saved"><i class="fas fa-heart"></i> Saved Items <span id="savedCount" class="badge">0</span></a></li>
-                            <li><a href="#payments" class="nav-link" data-bs-toggle="tab" data-bs-target="#payments"><i class="fas fa-credit-card"></i> Payment Methods</a></li>
-                            <li><a href="#settings" class="nav-link" data-bs-toggle="tab" data-bs-target="#settings"><i class="fas fa-cog"></i> Account Settings</a></li>
-                            <li><a href="#notifications" class="nav-link" data-bs-toggle="tab" data-bs-target="#notifications"><i class="fas fa-bell"></i> Notifications <span id="notificationsCount" class="badge bg-primary">0</span></a></li>
-                            <li><a href="help.html"><i class="fas fa-question-circle"></i> Help & Support</a></li>
                         </ul>
                     </div>
                 </div>
@@ -722,10 +710,69 @@
         let currentUser = null;
         let userData = null;
 
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            firebase.auth().signOut().then(() => {
+                // Sign-out successful
+                window.location.href = 'index.html';
+            }).catch((error) => {
+                // An error happened
+                console.error('Logout error:', error);
+                alert('Error signing out. Please try again.');
+            });
+        });
+
         // Initialize when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize Firebase Auth state observer
-            auth.onAuthStateChanged(handleAuthStateChanged);
+            firebase.auth().onAuthStateChanged((user) => {
+                currentUser = user;
+                
+                // Update UI based on auth state
+                const userProfile = document.getElementById('userProfile');
+                const loginBtn = document.getElementById('loginBtn');
+                
+                if (user) {
+                    // User is signed in
+                    if (userProfile) userProfile.style.display = 'block';
+                    if (loginBtn) loginBtn.style.display = 'none';
+                } else {
+                    // User is signed out, redirect to login
+                    if (userProfile) userProfile.style.display = 'none';
+                    if (loginBtn) loginBtn.style.display = 'inline-block';
+                    window.location.href = 'login.html';
+                }
+                if (user) {
+                    // User is signed in
+                    profileName.textContent = user.displayName || user.email.split('@')[0];
+                    userEmail.textContent = user.email;
+                    updateUserInitials();
+                    
+                    // Load additional user data from Firestore if needed
+                    loadUserData(user.uid);
+                } else {
+                    // User is signed out
+                    window.location.href = 'login.html';
+                }
+            });
+            
+            // Load additional user data from Firestore
+            async function loadUserData(userId) {
+                try {
+                    const userDoc = await db.collection('users').doc(userId).get();
+                    if (userDoc.exists) {
+                        userData = userDoc.data();
+                        // Update UI with user data
+                        if (userData.displayName) {
+                            profileName.textContent = userData.displayName;
+                        }
+                        // Update other fields as needed
+                    }
+                } catch (error) {
+                    console.error('Error loading user data:', error);
+                }
+            }
             
             // Initialize tab functionality
             const tabEls = document.querySelectorAll('button[data-bs-toggle="tab"]');
@@ -1336,27 +1383,13 @@
             }
         }
         
-        // Helper functions
+        // Helper functions - error display removed
         function showError(message) {
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'alert alert-error';
-            errorDiv.innerHTML = `
-                <i class="fas fa-exclamation-circle"></i>
-                <span>${message}</span>
-                <button class="close-btn" onclick="this.parentElement.remove()">&times;</button>
-            `;
-            
-            const container = document.querySelector('.account-content') || document.body;
-            container.insertBefore(errorDiv, container.firstChild);
-            
-            // Auto-remove after 5 seconds
-            setTimeout(() => {
-                errorDiv.remove();
-            }, 5000);
+            console.error(message); // Log to console instead of showing to user
         }
         
         function showSuccess(message) {
-            const successDiv = document.createElement('div');
+            console.log(message); // Log to console instead of showing to user
             interval = Math.floor(seconds / 2592000);
             if (interval >= 1) return interval + ' month' + (interval === 1 ? '' : 's') + ' ago';
             interval = Math.floor(seconds / 86400);
